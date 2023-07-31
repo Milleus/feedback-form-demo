@@ -128,6 +128,6 @@ deletePreviewButton.addEventListener("click", () => {
 
 submitFeedbackButton.addEventListener("click", (evt) => {
   evt.preventDefault();
-  window.alert("Feedback description and screenshot sent.");
+  window.alert("End of feedback screenshot form flow.");
   feedbackModal.classList.add("hidden");
 });
