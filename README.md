@@ -1,4 +1,4 @@
-# Feedback form demo
+# Feedback Form Demo
 
 Inspired by Google Console, this is a demo of a feedback form that allows users to easily take a screenshot of the website and submit it together as part of their feedback / issue report.
 
