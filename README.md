@@ -1,6 +1,6 @@
 # Feedback Form Demo
 
-Inspired by Google Console, this is a demo of a feedback form that allows users to easily take a screenshot of the website and submit it together as part of their feedback / issue report.
+Inspired by Google Console, this is a demo of a feedback form that allows users to easily take a screenshot of the website and submit it together as part of their feedback / issue report. Users can also use a built-in editor to hide sensitive information on the screenshot.
 
 This is a **zero dependency** solution as it uses native browser `getDisplayMedia()` API.
 
@@ -25,7 +25,6 @@ The current method of taking a screenshot also uses a video element instead of `
 ## Ideas for improvement
 
 - Allow users to drag a box to highlight sections of the screenshot.
-- Allow users to drag a box to hide sensitive information in the screenshot.
 - Turn the feedback form into a web component.
 - Make a small package exporting screenshot taking functions.
 

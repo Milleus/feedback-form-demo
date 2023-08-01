@@ -1,3 +1,6 @@
+/**
+ * Base form
+ */
 const baseForm = document.querySelector("#base-form");
 const baseFormTextInputs = document.querySelectorAll(
   "#base-form input[type='text']"

@@ -1,3 +1,6 @@
+/**
+ * Feedback form
+ */
 const openFeedbackButton = document.querySelector("#open-feedback-modal");
 const closeFeedbackButton = document.querySelector("#close-feedback-modal");
 const feedbackModal = document.querySelector("#feedback-modal");
@@ -8,7 +11,7 @@ const captureButton = document.querySelector("#capture-section button");
 
 const previewSection = document.querySelector("#preview-section");
 const previewImage = document.querySelector("#preview-section img");
-const deletePreviewButton = document.querySelector("#delete-preview");
+const deleteScreenshotButton = document.querySelector("#delete-screenshot");
 
 // const isDisplayMediaSupported = () => {
 //   return Boolean(navigator.mediaDevices?.getDisplayMedia);
@@ -55,7 +58,7 @@ const createVideoElement = (captureStream) => {
   return video;
 };
 
-const generateScreenshot = (video) => {
+const createCanvasElement = (video) => {
   const videoTrackSettings = video.srcObject?.getTracks()[0].getSettings();
   const canvas = document.createElement("canvas");
   canvas.width = videoTrackSettings?.width ?? 0;
@@ -63,10 +66,9 @@ const generateScreenshot = (video) => {
   const ctx = canvas.getContext("2d");
   ctx?.drawImage(video, 0, 0);
 
-  return canvas.toDataURL("image/jpeg", 0.7);
+  return canvas;
 };
 
-// EVENT LISTENERS
 openFeedbackButton.addEventListener("click", () => {
   feedbackModal.classList.remove("hidden");
 });
@@ -92,20 +94,23 @@ captureButton.addEventListener("click", async () => {
     setTimeout(r, 500);
   });
 
-  const screenshot = generateScreenshot(video);
+  const canvas = createCanvasElement(video);
+  const screenshot = canvas.toDataURL("image/jpeg", 0.7);
 
   // clean up
   stopCapture(video);
   canvas.remove();
 
   previewImage.src = screenshot;
+  editorImage.src = screenshot;
   feedbackModal.classList.remove("hidden");
   captureSection.classList.add("hidden");
   previewSection.classList.remove("hidden");
 });
 
-deletePreviewButton.addEventListener("click", () => {
+deleteScreenshotButton.addEventListener("click", () => {
   previewImage.src = "data:,";
+  editorImage.src = "data:,";
   captureSection.classList.remove("hidden");
   previewSection.classList.add("hidden");
 });
@@ -131,4 +136,134 @@ feedbackForm.addEventListener("submit", (evt) => {
   );
   feedbackForm.reset();
   feedbackModal.classList.add("hidden");
+});
+
+/**
+ * Screenshot editor modal
+ */
+const openEditorButton = document.querySelector("#edit-screenshot");
+const closeEditorButton = document.querySelector("#close-editor-modal");
+const cancelEditorButton = document.querySelector("#cancel-editor-modal");
+const updateScreenshotButton = document.querySelector("#update-screenshot");
+const editorModal = document.querySelector("#editor-modal");
+const editorImage = document.querySelector("#editor-modal img");
+const editorCanvas = document.querySelector("#editor-modal canvas");
+const editorCanvasCtx = editorCanvas.getContext("2d");
+
+let isDown = false;
+let startX;
+let startY;
+let rectWidth;
+let rectHeight;
+let rectangles = [];
+
+openEditorButton.addEventListener("click", () => {
+  editorModal.classList.remove("hidden");
+  feedbackModal.classList.add("hidden");
+
+  const aspectRatio = previewImage.naturalWidth / previewImage.naturalHeight;
+  const container = document.querySelector("#canvas-container");
+  const canvasWidth = container.getBoundingClientRect().width;
+  const canvasHeight = canvasWidth / aspectRatio;
+
+  editorCanvas.width = canvasWidth;
+  editorCanvas.height = canvasHeight;
+});
+
+editorCanvas.addEventListener("mousedown", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  const offset = editorCanvas.getBoundingClientRect();
+  const offsetX = offset.left;
+  const offsetY = offset.top;
+
+  startX = parseInt(evt.clientX - offsetX);
+  startY = parseInt(evt.clientY - offsetY);
+
+  isDown = true;
+});
+
+editorCanvas.addEventListener("mouseup", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  isDown = false;
+
+  rectangles.push({
+    x: startX,
+    y: startY,
+    width: rectWidth,
+    height: rectHeight,
+  });
+});
+
+editorCanvas.addEventListener("mouseout", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  isDown = false;
+
+  editorCanvasCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+  rectangles.forEach((rect) => {
+    editorCanvasCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
+  });
+});
+
+editorCanvas.addEventListener("mousemove", (evt) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  if (!isDown) return;
+
+  const offset = editorCanvas.getBoundingClientRect();
+  const offsetX = offset.left;
+  const offsetY = offset.top;
+
+  const currentX = parseInt(evt.clientX - offsetX);
+  const currentY = parseInt(evt.clientY - offsetY);
+
+  editorCanvasCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+
+  rectangles.forEach((rect) => {
+    editorCanvasCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
+  });
+
+  rectWidth = currentX - startX;
+  rectHeight = currentY - startY;
+
+  editorCanvasCtx.fillRect(startX, startY, rectWidth, rectHeight);
+});
+
+closeEditorButton.addEventListener("click", () => {
+  editorModal.classList.add("hidden");
+  feedbackModal.classList.remove("hidden");
+  rectangles = [];
+});
+
+cancelEditorButton.addEventListener("click", () => {
+  editorModal.classList.add("hidden");
+  feedbackModal.classList.remove("hidden");
+  rectangles = [];
+});
+
+updateScreenshotButton.addEventListener("click", () => {
+  const canvas = document.createElement("canvas");
+  canvas.width = previewImage.naturalWidth;
+  canvas.height = previewImage.naturalHeight;
+  const ctx = canvas.getContext("2d");
+
+  // draw existing
+  ctx?.drawImage(editorImage, 0, 0);
+  ctx.drawImage(editorCanvas, 0, 0);
+
+  const updatedScreenshot = canvas.toDataURL("image/jpeg", 0.7);
+  previewImage.src = updatedScreenshot;
+  editorImage.src = updatedScreenshot;
+
+  // cleanup
+  canvas.remove();
+  editorModal.classList.add("hidden");
+  feedbackModal.classList.remove("hidden");
+  rectangles = [];
 });
