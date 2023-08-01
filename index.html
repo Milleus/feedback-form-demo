@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -538,7 +538,7 @@
                 <button
                   id="edit-screenshot"
                   type="button"
-                  class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                 >
                   Hide info
                 </button>
@@ -574,9 +574,9 @@
       <!-- editor modal -->
       <div id="editor-modal" class="hidden">
         <div class="fixed inset-0 z-50 bg-black/20"></div>
-        <div class="fixed inset-0 z-50 overflow-auto m-8">
+        <div class="fixed inset-0 z-50 m-8 overflow-auto">
           <div
-            class="bg-white rounded-lg border border-gray-900/10 shadow max-w-6xl mx-auto"
+            class="mx-auto max-w-6xl rounded-lg border border-gray-900/10 bg-white shadow"
           >
             <div class="flex items-center justify-between px-4 py-6 sm:px-8">
               <h3 class="block text-sm font-bold leading-7 text-gray-900">
@@ -604,12 +604,12 @@
 
             <div id="canvas-container" class="relative">
               <img src="data:," alt="" />
-              <canvas class="absolute inset-0 w-full h-full"></canvas>
+              <canvas class="absolute inset-0 h-full w-full"></canvas>
             </div>
 
             <div class="border-b border-gray-900/10"></div>
 
-            <div class="px-4 py-6 sm:px-8 flex justify-end gap-6">
+            <div class="flex justify-end gap-6 px-4 py-6 sm:px-8">
               <button
                 id="cancel-editor-modal"
                 type="button"
