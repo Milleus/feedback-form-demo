@@ -20,7 +20,7 @@
 
   <main class="container mx-auto px-4 py-12 mt-20">
     <h1 class="text-3xl font-extrabold leading-7 text-gray-900">Profile & Settings</h1>
-    <form id="base-form" action="" class="border border-gray-900/10 px-4 py-12 rounded-lg sm:px-8 sm:py-24 mt-8">
+    <form id="base-form" action="#" class="border border-gray-900/10 px-4 py-12 rounded-lg sm:px-8 sm:py-24 mt-8">
       <section class="grid grid-cols-1 gap-10 sm:grid-cols-3">
         <div>
           <h2 class="text-base font-semibold leading-7 text-gray-900">Profile</h2>
@@ -245,16 +245,15 @@
       <div class="border-b border-gray-900/10 my-12"></div>
 
       <div class="mt-6 flex items-center justify-end gap-x-6">
-        <button id="cancel-profile-update" type="button"
-          class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-        <button id="submit-profile-update" type="submit"
+        <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
+        <button type="submit"
           class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
       </div>
     </form>
 
     <!-- feedback modal -->
     <div id="feedback-modal" class="fixed inset-0 bg-black/20 z-50 hidden">
-      <form action="" class="bg-white max-w-sm h-full ml-auto flex flex-col">
+      <form id="feedback-form" action="#" class="bg-white max-w-sm h-full ml-auto flex flex-col">
         <div class="flex items-center justify-between px-4 py-6 sm:px-8">
           <h3 class="block text-sm font-bold leading-7 text-gray-900">Send feedback to Company</h3>
           <button id="close-feedback-modal" type="button">
@@ -274,7 +273,7 @@
               feedback</label>
             <div class="mt-2">
               <textarea id="feedback-description" name="feedback-description" rows="3"
-                placeholder="Tell us what prompted this feedback..."
+                placeholder="Tell us what prompted this feedback..." required
                 class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
             </div>
           </div>
@@ -290,7 +289,7 @@
           <div id="preview-section" class="hidden">
             <p class="block text-sm font-medium leading-6 text-gray-900">Attached screenshot</p>
             <div class="border border-gray-900/10 rounded-md px-3 mt-2 relative bg-gray-200">
-              <img src="" alt="">
+              <img src="data:," alt="">
               <button id="delete-preview" type="button"
                 class="absolute -top-2 -right-2 rounded-full bg-white p-3 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                 <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
@@ -312,7 +311,7 @@
         <div class="border-b border-gray-900/10"></div>
 
         <div class="px-4 py-6 sm:px-8">
-          <button id="submit-feedback" type="submit"
+          <button type="submit"
             class="block ml-auto rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Send</button>
         </div>
       </form>

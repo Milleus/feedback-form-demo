@@ -30,13 +30,13 @@ const stopCapture = (video) => {
 /**
  * Base form
  */
-const baseFormTextInput = document.querySelectorAll(
+const baseForm = document.querySelector("#base-form");
+const baseFormTextInputs = document.querySelectorAll(
   "#base-form input[type='text']"
 );
-const cancelProfileButton = document.querySelector("#cancel-profile-update");
-const submitProfileButton = document.querySelector("#submit-profile-update");
+// const submitProfileButton = document.querySelector("#submit-profile-update");
 
-baseFormTextInput.forEach((input) => {
+baseFormTextInputs.forEach((input) => {
   if (!input.nextElementSibling) return;
 
   input.addEventListener("input", (evt) => {
@@ -44,14 +44,7 @@ baseFormTextInput.forEach((input) => {
   });
 });
 
-cancelProfileButton.addEventListener("click", (evt) => {
-  evt.preventDefault();
-  window.alert(
-    "Click on `Send feedback` to test the feedback screenshot form flow."
-  );
-});
-
-submitProfileButton.addEventListener("click", (evt) => {
+baseForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
   window.alert(
     "Click on `Send feedback` to test the feedback screenshot form flow."
@@ -64,6 +57,7 @@ submitProfileButton.addEventListener("click", (evt) => {
 const openFeedbackButton = document.querySelector("#open-feedback-modal");
 const closeFeedbackButton = document.querySelector("#close-feedback-modal");
 const feedbackModal = document.querySelector("#feedback-modal");
+const feedbackForm = document.querySelector("#feedback-form");
 
 const captureSection = document.querySelector("#capture-section");
 const captureButton = document.querySelector("#capture-section button");
@@ -71,7 +65,6 @@ const captureButton = document.querySelector("#capture-section button");
 const previewSection = document.querySelector("#preview-section");
 const previewImage = document.querySelector("#preview-section img");
 const deletePreviewButton = document.querySelector("#delete-preview");
-const submitFeedbackButton = document.querySelector("#submit-feedback");
 
 openFeedbackButton.addEventListener("click", () => {
   feedbackModal.classList.remove("hidden");
@@ -83,8 +76,13 @@ closeFeedbackButton.addEventListener("click", () => {
 
 captureButton.addEventListener("click", async () => {
   feedbackModal.classList.add("hidden");
-
   const captureStream = await startCapture();
+
+  if (!captureStream) {
+    feedbackModal.classList.remove("hidden");
+    return;
+  }
+
   const video = document.createElement("video");
   video.autoplay = true;
   video.muted = true;
@@ -121,13 +119,30 @@ captureButton.addEventListener("click", async () => {
 });
 
 deletePreviewButton.addEventListener("click", () => {
-  previewImage.src = null;
+  previewImage.src = "data:,";
   captureSection.classList.remove("hidden");
   previewSection.classList.add("hidden");
 });
 
-submitFeedbackButton.addEventListener("click", (evt) => {
+feedbackForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  window.alert("End of feedback screenshot form flow.");
+
+  const formData = new FormData(feedbackForm);
+
+  const data = {
+    datetime: new Date().toISOString(),
+    userAgent: window.navigator.userAgent,
+    url: window.location.href,
+    description: formData.get("feedback-description"),
+    username: "autofilled",
+    email: "autofilled",
+    contact: "autofilled",
+    screenshot: previewImage.src !== "data:," ? previewImage.src : null,
+  };
+
+  window.alert(
+    `End of feedback screenshot form flow. Data: ${JSON.stringify(data)}`
+  );
+  feedbackForm.reset();
   feedbackModal.classList.add("hidden");
 });
