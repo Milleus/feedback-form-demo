@@ -123,11 +123,12 @@ feedbackForm.addEventListener("submit", (evt) => {
   const data = {
     datetime: new Date().toISOString(),
     userAgent: window.navigator.userAgent,
-    url: window.location.href,
+    pageTitle: window.document.title,
+    pageURL: window.location.href,
     description: formData.get("feedback-description"),
-    username: "autofilled",
-    email: "autofilled",
-    contact: "autofilled",
+    username: "can be autofilled",
+    email: "can be autofilled",
+    contact: "can be autofilled",
     screenshot: previewImage.src !== "data:," ? previewImage.src : null,
   };
 

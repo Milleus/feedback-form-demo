@@ -2,9 +2,9 @@
 
 Inspired by Google Console, this is a demo of a feedback form that allows users to easily take a screenshot of the website and submit it together as part of their feedback / issue report. Users can also use a built-in editor to hide sensitive information on the screenshot.
 
-This is a **zero dependency** solution as it uses native browser `getDisplayMedia()` API.
+This solution has **no third-party libraries** and uses native browser `getDisplayMedia()` API. However, as this API is relatively new, it is **not supported on mobile device browsers** yet.
 
-However, as this API is relatively new, it is **not yet supported on mobile device browsers**.
+Aside from an easy way of capturing screenshots
 
 Live demo at [https://Milleus.github.io/feedback-form-demo/](https://Milleus.github.io/feedback-form-demo/).
 
@@ -14,7 +14,9 @@ Live demo at [https://Milleus.github.io/feedback-form-demo/](https://Milleus.git
 
 Having a screenshot of the current state of the website gives us better information on what the user faced such as error messages, error codes, visual bugs, etc.
 
-This helps us to troubleshoot issues faster and improve the product.
+Additional basic information such as timestamp, user agent, page title, page URL, description, username / email / contact can also be included. Most of these can be pre-populated and does not require user input.
+
+A higher quality of feedback would help us to troubleshoot issues and improve the product faster.
 
 ## Limitations
 
