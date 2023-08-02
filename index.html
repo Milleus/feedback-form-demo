@@ -465,20 +465,20 @@
       </form>
 
       <!-- feedback modal -->
-      <div id="feedback-modal" class="fixed inset-0 z-50 hidden bg-black/20">
-        <form
-          id="feedback-form"
-          action="#"
-          class="ml-auto flex h-full max-w-sm flex-col bg-white"
-        >
+      <dialog
+        id="feedback-modal"
+        class="fixed inset-0 z-50 m-0 ml-auto h-full max-h-screen max-w-sm bg-white"
+      >
+        <form id="feedback-form" action="#" class="flex h-full flex-col">
           <div class="flex items-center justify-between px-4 py-6 sm:px-8">
             <h3 class="block text-sm font-bold leading-7 text-gray-900">
-              Send feedback to Company
+              Send feedback to Your Company
             </h3>
             <button
               id="close-feedback-modal"
               type="button"
-              aria-label="Close feedback modal"
+              aria-label="close feedback modal"
+              class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
             >
               <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
               <svg
@@ -586,65 +586,62 @@
             </button>
           </div>
         </form>
-      </div>
+      </dialog>
 
       <!-- editor modal -->
-      <div id="editor-modal" class="hidden">
-        <div class="fixed inset-0 z-50 bg-black/20"></div>
-        <div class="fixed inset-0 z-50 m-8 overflow-auto">
-          <div
-            class="mx-auto max-w-6xl rounded-lg border border-gray-900/10 bg-white shadow"
+      <dialog
+        id="editor-modal"
+        class="max-w-6xl rounded-lg border border-gray-900/10 bg-white shadow"
+      >
+        <div class="flex items-center justify-between px-4 py-6 sm:px-8">
+          <h3 class="block text-sm font-bold leading-7 text-gray-900">
+            Click and drag to hide sensitive information
+          </h3>
+          <button
+            id="close-editor-modal"
+            type="button"
+            aria-label="Close screenshot editor"
+            class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100"
           >
-            <div class="flex items-center justify-between px-4 py-6 sm:px-8">
-              <h3 class="block text-sm font-bold leading-7 text-gray-900">
-                Click and drag to hide sensitive information
-              </h3>
-              <button
-                id="close-editor-modal"
-                type="button"
-                aria-label="Close screenshot editor"
-              >
-                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="1em"
-                  viewBox="0 0 384 512"
-                >
-                  <path
-                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div class="border-b border-gray-900/10"></div>
-
-            <div id="canvas-container" class="relative">
-              <img src="data:," alt="" />
-              <canvas class="absolute inset-0 h-full w-full"></canvas>
-            </div>
-
-            <div class="border-b border-gray-900/10"></div>
-
-            <div class="flex justify-end gap-6 px-4 py-6 sm:px-8">
-              <button
-                id="cancel-editor-modal"
-                type="button"
-                class="rounded-md bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                id="update-screenshot"
-                type="button"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Done
-              </button>
-            </div>
-          </div>
+            <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 384 512"
+            >
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+              />
+            </svg>
+          </button>
         </div>
-      </div>
+
+        <div class="border-b border-gray-900/10"></div>
+
+        <div id="canvas-container" class="relative">
+          <img src="data:," alt="" />
+          <canvas class="absolute inset-0 h-full w-full"></canvas>
+        </div>
+
+        <div class="border-b border-gray-900/10"></div>
+
+        <div class="flex justify-end gap-6 px-4 py-6 sm:px-8">
+          <button
+            id="cancel-editor-modal"
+            type="button"
+            class="rounded-md bg-white px-6 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            id="update-screenshot"
+            type="button"
+            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Done
+          </button>
+        </div>
+      </dialog>
     </main>
 
     <footer class="bg-gray-900 px-4 py-8 pt-12">

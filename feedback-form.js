@@ -50,15 +50,13 @@ const createVideoElement = (captureStream) => {
   video.srcObject = captureStream;
   video.setAttribute(
     "style",
-    "position:fixed;top:0;left:0;pointer-events:none;visibility:hidden;"
+    "position:fixed;top:0;left:0;pointer-events:none;visibility:hidden;",
   );
-
-  document.body.appendChild(video);
 
   return video;
 };
 
-const createCanvasElement = (video) => {
+const videoToCanvas = (video) => {
   const videoTrackSettings = video.srcObject?.getTracks()[0].getSettings();
   const canvas = document.createElement("canvas");
   canvas.width = videoTrackSettings?.width ?? 0;
@@ -70,31 +68,32 @@ const createCanvasElement = (video) => {
 };
 
 openFeedbackButton.addEventListener("click", () => {
-  feedbackModal.classList.remove("hidden");
+  feedbackModal.showModal();
 });
 
 closeFeedbackButton.addEventListener("click", () => {
-  feedbackModal.classList.add("hidden");
+  feedbackModal.close();
 });
 
 captureButton.addEventListener("click", async () => {
-  feedbackModal.classList.add("hidden");
+  feedbackModal.close();
   const captureStream = await startCapture();
 
   if (!captureStream) {
-    feedbackModal.classList.remove("hidden");
+    feedbackModal.showModal();
     return;
   }
 
   // using video instead of ImageCapture for better browser support
   const video = createVideoElement(captureStream);
+  document.body.appendChild(video);
 
   // workaround to support Safari browsers
   await new Promise((r) => {
     setTimeout(r, 500);
   });
 
-  const canvas = createCanvasElement(video);
+  const canvas = videoToCanvas(video);
   const screenshot = canvas.toDataURL("image/jpeg", 0.7);
 
   // clean up
@@ -103,9 +102,10 @@ captureButton.addEventListener("click", async () => {
 
   previewImage.src = screenshot;
   editorImage.src = screenshot;
-  feedbackModal.classList.remove("hidden");
   captureSection.classList.add("hidden");
   previewSection.classList.remove("hidden");
+
+  feedbackModal.showModal();
 });
 
 deleteScreenshotButton.addEventListener("click", () => {
@@ -132,10 +132,10 @@ feedbackForm.addEventListener("submit", (evt) => {
   };
 
   window.alert(
-    `End of feedback screenshot form flow. Data: ${JSON.stringify(data)}`
+    `End of feedback screenshot form flow. Data: ${JSON.stringify(data)}`,
   );
   feedbackForm.reset();
-  feedbackModal.classList.add("hidden");
+  feedbackModal.close();
 });
 
 /**
@@ -148,7 +148,6 @@ const updateScreenshotButton = document.querySelector("#update-screenshot");
 const editorModal = document.querySelector("#editor-modal");
 const editorImage = document.querySelector("#editor-modal img");
 const editorCanvas = document.querySelector("#editor-modal canvas");
-const editorCanvasCtx = editorCanvas.getContext("2d");
 
 let isDown = false;
 let startX;
@@ -157,11 +156,21 @@ let rectWidth;
 let rectHeight;
 let rectangles = [];
 
-openEditorButton.addEventListener("click", () => {
-  editorModal.classList.remove("hidden");
-  feedbackModal.classList.add("hidden");
+const redraw = () => {
+  const ctx = editorCanvas.getContext("2d");
 
-  const aspectRatio = previewImage.naturalWidth / previewImage.naturalHeight;
+  ctx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+
+  rectangles.forEach((rect) => {
+    ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+  });
+};
+
+openEditorButton.addEventListener("click", () => {
+  editorModal.showModal();
+  feedbackModal.close();
+
+  const aspectRatio = editorImage.naturalWidth / editorImage.naturalHeight;
   const container = document.querySelector("#canvas-container");
   const canvasWidth = container.getBoundingClientRect().width;
   const canvasHeight = canvasWidth / aspectRatio;
@@ -175,11 +184,8 @@ editorCanvas.addEventListener("mousedown", (evt) => {
   evt.stopPropagation();
 
   const offset = editorCanvas.getBoundingClientRect();
-  const offsetX = offset.left;
-  const offsetY = offset.top;
-
-  startX = parseInt(evt.clientX - offsetX);
-  startY = parseInt(evt.clientY - offsetY);
+  startX = evt.clientX - offset.left;
+  startY = evt.clientY - offset.top;
 
   isDown = true;
 });
@@ -202,12 +208,10 @@ editorCanvas.addEventListener("mouseout", (evt) => {
   evt.preventDefault();
   evt.stopPropagation();
 
-  isDown = false;
+  if (!isDown) return;
 
-  editorCanvasCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
-  rectangles.forEach((rect) => {
-    editorCanvasCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
-  });
+  isDown = false;
+  redraw();
 });
 
 editorCanvas.addEventListener("mousemove", (evt) => {
@@ -216,34 +220,28 @@ editorCanvas.addEventListener("mousemove", (evt) => {
 
   if (!isDown) return;
 
+  redraw();
+
+  // draw current
   const offset = editorCanvas.getBoundingClientRect();
-  const offsetX = offset.left;
-  const offsetY = offset.top;
-
-  const currentX = parseInt(evt.clientX - offsetX);
-  const currentY = parseInt(evt.clientY - offsetY);
-
-  editorCanvasCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
-
-  rectangles.forEach((rect) => {
-    editorCanvasCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
-  });
-
+  const currentX = evt.clientX - offset.left;
+  const currentY = evt.clientY - offset.top;
   rectWidth = currentX - startX;
   rectHeight = currentY - startY;
 
-  editorCanvasCtx.fillRect(startX, startY, rectWidth, rectHeight);
+  const ctx = editorCanvas.getContext("2d");
+  ctx.fillRect(startX, startY, rectWidth, rectHeight);
 });
 
 closeEditorButton.addEventListener("click", () => {
-  editorModal.classList.add("hidden");
-  feedbackModal.classList.remove("hidden");
+  editorModal.close();
+  feedbackModal.showModal();
   rectangles = [];
 });
 
 cancelEditorButton.addEventListener("click", () => {
-  editorModal.classList.add("hidden");
-  feedbackModal.classList.remove("hidden");
+  editorModal.close();
+  feedbackModal.showModal();
   rectangles = [];
 });
 
@@ -253,9 +251,19 @@ updateScreenshotButton.addEventListener("click", () => {
   canvas.height = previewImage.naturalHeight;
   const ctx = canvas.getContext("2d");
 
-  // draw existing
+  // combine
   ctx?.drawImage(editorImage, 0, 0);
-  ctx.drawImage(editorCanvas, 0, 0);
+  ctx?.drawImage(
+    editorCanvas,
+    0,
+    0,
+    editorCanvas.width,
+    editorCanvas.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height,
+  );
 
   const updatedScreenshot = canvas.toDataURL("image/jpeg", 0.7);
   previewImage.src = updatedScreenshot;
@@ -263,7 +271,8 @@ updateScreenshotButton.addEventListener("click", () => {
 
   // cleanup
   canvas.remove();
-  editorModal.classList.add("hidden");
-  feedbackModal.classList.remove("hidden");
+
+  editorModal.close();
+  feedbackModal.showModal();
   rectangles = [];
 });
