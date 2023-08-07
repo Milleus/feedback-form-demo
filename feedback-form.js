@@ -126,9 +126,6 @@ feedbackForm.addEventListener("submit", (evt) => {
     pageTitle: window.document.title,
     pageURL: window.location.href,
     description: formData.get("feedback-description"),
-    username: "can be autofilled",
-    email: "can be autofilled",
-    contact: "can be autofilled",
     screenshot: previewImage.src !== "data:," ? previewImage.src : null,
   };
 
